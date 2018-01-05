@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  metadata: 
+  revisable_id: 1
+  revisable_type: MyString
+
+two:
+  metadata: 
+  revisable_id: 1
+  revisable_type: MyString
