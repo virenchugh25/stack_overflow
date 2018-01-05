@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180105053849) do
+ActiveRecord::Schema.define(version: 20180105142155) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,14 +29,13 @@ ActiveRecord::Schema.define(version: 20180105053849) do
 
   create_table "comments", force: :cascade do |t|
     t.string "text", null: false
-    t.integer "commentable_id", null: false
     t.string "commentable_type", null: false
-    t.integer "user_id", null: false
+    t.bigint "commentable_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["commentable_id"], name: "index_comments_on_commentable_id"
-    t.index ["commentable_type"], name: "index_comments_on_commentable_type"
+    t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable_type_and_commentable_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
@@ -51,14 +50,20 @@ ActiveRecord::Schema.define(version: 20180105053849) do
     t.index ["user_id"], name: "index_questions_on_user_id"
   end
 
+  create_table "questions_tags", id: false, force: :cascade do |t|
+    t.bigint "question_id", null: false
+    t.bigint "tag_id", null: false
+    t.index ["question_id"], name: "index_questions_tags_on_question_id"
+    t.index ["tag_id"], name: "index_questions_tags_on_tag_id"
+  end
+
   create_table "revisions", force: :cascade do |t|
     t.jsonb "metadata"
-    t.integer "revisable_id", null: false
     t.string "revisable_type", null: false
+    t.bigint "revisable_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["revisable_id"], name: "index_revisions_on_revisable_id"
-    t.index ["revisable_type"], name: "index_revisions_on_revisable_type"
+    t.index ["revisable_type", "revisable_id"], name: "index_revisions_on_revisable_type_and_revisable_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -67,19 +72,8 @@ ActiveRecord::Schema.define(version: 20180105053849) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["auth_token"], name: "index_sessions_on_auth_token"
+    t.index ["auth_token"], name: "index_sessions_on_auth_token", unique: true
     t.index ["user_id"], name: "index_sessions_on_user_id"
-  end
-
-  create_table "tag_associations", force: :cascade do |t|
-    t.integer "tag_id", null: false
-    t.integer "tagable_id", null: false
-    t.string "tagable_type", null: false
-    t.datetime "deleted_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["tagable_id"], name: "index_tag_associations_on_tagable_id"
-    t.index ["tagable_type"], name: "index_tag_associations_on_tagable_type"
   end
 
   create_table "tags", force: :cascade do |t|
@@ -102,20 +96,23 @@ ActiveRecord::Schema.define(version: 20180105053849) do
   end
 
   create_table "votes", force: :cascade do |t|
-    t.integer "votable_id", null: false
     t.string "votable_type", null: false
+    t.bigint "votable_id", null: false
     t.integer "vote_value", null: false
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_votes_on_user_id"
-    t.index ["votable_id"], name: "index_votes_on_votable_id"
-    t.index ["votable_type"], name: "index_votes_on_votable_type"
+    t.index ["votable_type", "votable_id"], name: "index_votes_on_votable_type_and_votable_id"
   end
 
   add_foreign_key "answers", "questions"
   add_foreign_key "answers", "users"
+  add_foreign_key "comments", "users"
   add_foreign_key "questions", "users"
+  add_foreign_key "questions_tags", "questions"
+  add_foreign_key "questions_tags", "tags"
   add_foreign_key "sessions", "users"
+  add_foreign_key "votes", "users"
 end
