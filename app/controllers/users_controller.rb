@@ -1,11 +1,9 @@
 class UsersController < ApplicationController
-  before_action :encrypt_password
   skip_before_action :verify_authenticity_token
-  #include UserSecurity
 
   def index
-    @user = User.all
-    render json: @user, status: 200
+    @users = User.all
+    render json: @users, status: 200
   end
 
   def show
