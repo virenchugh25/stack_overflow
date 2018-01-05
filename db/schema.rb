@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 20180105053849) do
     t.bigint "user_id", null: false
     t.bigint "question_id", null: false
     t.boolean "accepted"
+    t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["question_id"], name: "index_answers_on_question_id"
@@ -31,6 +32,7 @@ ActiveRecord::Schema.define(version: 20180105053849) do
     t.integer "commentable_id", null: false
     t.string "commentable_type", null: false
     t.integer "user_id", null: false
+    t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["commentable_id"], name: "index_comments_on_commentable_id"
@@ -43,6 +45,7 @@ ActiveRecord::Schema.define(version: 20180105053849) do
     t.bigint "user_id", null: false
     t.integer "dup_id"
     t.boolean "wiki", default: false
+    t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_questions_on_user_id"
@@ -87,25 +90,28 @@ ActiveRecord::Schema.define(version: 20180105053849) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "enc_password", null: false
-    t.string "salt", null: false
+    t.string "enc_password"
+    t.string "salt"
     t.string "email", null: false
-    t.string "name", null: false
+    t.string "name"
+    t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_users_on_email"
-    t.index ["salt"], name: "index_users_on_salt"
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["salt"], name: "index_users_on_salt", unique: true
   end
 
   create_table "votes", force: :cascade do |t|
     t.integer "votable_id", null: false
     t.string "votable_type", null: false
+    t.integer "vote_value", null: false
     t.integer "user_id", null: false
-    t.boolean "is_active", default: false
+    t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_votes_on_user_id"
-    t.index ["votable_id", "votable_type"], name: "index_votes_on_votable_id_and_votable_type"
+    t.index ["votable_id"], name: "index_votes_on_votable_id"
+    t.index ["votable_type"], name: "index_votes_on_votable_type"
   end
 
   add_foreign_key "answers", "questions"
