@@ -10,10 +10,6 @@ class AnswersController < ApplicationController
     end
   end
 
-  def new
-    @answer = Answer.new
-  end
-
   def create
     @answer = Answer.new(answer_params)
     if @answer.save

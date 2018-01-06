@@ -15,12 +15,8 @@ class UsersController < ApplicationController
   def update
     @user = User.active.find_by(id: params[:id])
     return render json: { error: "Not a valid user" }, status: 404 unless @user
-    return render json: @user.errors, status: 500 unless @user.update_attributes(user_params)
+    return render json: @user.errors, status: 500 unless @user.update_attributes(update_user_params)
     render json: @user, status: 200  
-  end
-
-  def new
-    @user = User.new
   end
 
   def create
@@ -39,6 +35,10 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:name, :email, :password)
+    params.require(:user).permit(:name, :email, :password, :password_confirmation)
+  end
+
+  def update_user_params
+    params.require(:user).permit(:name, :email)
   end
 end

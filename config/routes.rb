@@ -3,4 +3,7 @@ Rails.application.routes.draw do
   resources :users
   resources :questions
   resources :answers, only: [:create, :update, :destroy]
+  
+  post '/login', to: 'sessions#login'
+  delete '/logout', to: 'sessions#destroy'
 end
