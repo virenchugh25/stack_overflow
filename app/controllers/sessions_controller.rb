@@ -1,5 +1,6 @@
 class SessionsController < ApplicationController
-  
+  skip_before_action :verify_authenticity_token
+
   def create
     user = User.active.find_by(email: session_params[:email])
     return render json: { error: 'Could not log in' }, status: 500 unless user && user.authenticate(session_params[:password])
