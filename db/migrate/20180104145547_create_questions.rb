@@ -5,7 +5,7 @@ class CreateQuestions < ActiveRecord::Migration[5.1]
       t.belongs_to :user, index: true, foreign_key: true, null: false
       t.integer :dup_id
       t.boolean :wiki, default: false
-      t.timestamp :deleted_at
+      t.timestamp :deleted_at, index: true
 
       t.timestamps
     end

@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 20180105142155) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_answers_on_deleted_at"
     t.index ["question_id"], name: "index_answers_on_question_id"
     t.index ["user_id"], name: "index_answers_on_user_id"
   end
@@ -36,6 +37,7 @@ ActiveRecord::Schema.define(version: 20180105142155) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable_type_and_commentable_id"
+    t.index ["deleted_at"], name: "index_comments_on_deleted_at"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
@@ -47,6 +49,7 @@ ActiveRecord::Schema.define(version: 20180105142155) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_questions_on_deleted_at"
     t.index ["user_id"], name: "index_questions_on_user_id"
   end
 
@@ -73,6 +76,7 @@ ActiveRecord::Schema.define(version: 20180105142155) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["auth_token"], name: "index_sessions_on_auth_token", unique: true
+    t.index ["deleted_at"], name: "index_sessions_on_deleted_at"
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
@@ -84,15 +88,14 @@ ActiveRecord::Schema.define(version: 20180105142155) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "enc_password"
-    t.string "salt"
+    t.string "password_digest"
     t.string "email", null: false
     t.string "name"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_users_on_deleted_at"
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["salt"], name: "index_users_on_salt", unique: true
   end
 
   create_table "votes", force: :cascade do |t|
@@ -103,6 +106,7 @@ ActiveRecord::Schema.define(version: 20180105142155) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_votes_on_deleted_at"
     t.index ["user_id"], name: "index_votes_on_user_id"
     t.index ["votable_type", "votable_id"], name: "index_votes_on_votable_type_and_votable_id"
   end

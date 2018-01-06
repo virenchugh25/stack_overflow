@@ -9,4 +9,6 @@ class Question < ApplicationRecord
   has_many :revisions, as: :revisable
 
   has_and_belongs_to_many :tags
+
+  scope :active, -> { where(deleted_at: nil) }
 end

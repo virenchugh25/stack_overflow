@@ -7,4 +7,6 @@ class Answer < ApplicationRecord
     has_many :comments, as: :commentable
     has_many :votes, as: :votable
     has_many :revisions, as: :revisable
+
+    default_scope { where(deleted_at: nil) }
 end

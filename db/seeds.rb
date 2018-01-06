@@ -12,12 +12,12 @@ end
 
 
 # Seeding for users table
-users = [{ name: 'Viren Chugh', email: 'viren.chugh@1mg.com', salt: SecureRandom.hex(12) },
-	{ name: 'Aamod', email: 'aa@aa.com', salt: SecureRandom.hex(12) },
-	{ name: 'Asura', email: 'asura@gmail.com', salt: SecureRandom.hex(12) }]
+users = [{ name: 'Viren Chugh', email: 'viren.chugh@1mg.com' },
+	{ name: 'Aamod', email: 'aa@aa.com' },
+	{ name: 'Asura', email: 'asura@gmail.com' }]
 
 users.each do |user|
-	user[:enc_password] = BCrypt::Password.create(user[:salt] + 'abcd')	
+	user[:password_digest] = BCrypt::Password.create('abcd')	
 end
 User.create(users)
 

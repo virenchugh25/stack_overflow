@@ -5,4 +5,6 @@ class Comment < ApplicationRecord
   belongs_to :commentable, polymorphic: true
 
   has_many :revisions, as: :revisable
+
+  scope :active, -> { where(deleted_at: nil) }
 end

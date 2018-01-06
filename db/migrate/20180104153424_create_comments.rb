@@ -4,7 +4,7 @@ class CreateComments < ActiveRecord::Migration[5.1]
       t.string :text, null: false
       t.references :commentable, polymorphic: true, null: false, index: true
       t.belongs_to :user, null: false, index: true, foreign_key: true
-      t.timestamp :deleted_at
+      t.timestamp :deleted_at, index: true
 
       t.timestamps
     end
