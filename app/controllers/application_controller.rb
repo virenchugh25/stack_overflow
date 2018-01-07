@@ -1,13 +1,10 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
-
-  def current_user
-    @current_user ||= User.active.find(session[:user_id]) if session[:user_id]
-  end
-  helper_method :current_user
+  skip_before_action :verify_authenticity_token
+  before_action :authorize, except: [:login, :show, :index]
 
   def authorize
-    #redirect_to '/login' unless current_user
-    render json: { error: 'Not authorized' }, status: 403
+    @session = Session.active.find_by(user_id: cookies.signed[:user_id], auth_token: cookies.signed[:auth_token])
+    render json: { error: 'Not authorized' }, status: 403 unless @session
   end
 end

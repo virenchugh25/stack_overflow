@@ -1,24 +1,13 @@
 class SessionsController < ApplicationController
-  skip_before_action :verify_authenticity_token
-
   def create
-    user = User.active.find_by(email: session_params[:email])
-    return render json: { error: 'Could not log in' }, status: 500 unless user && user.authenticate(session_params[:password])
-
-    cookies.signed[:user_id] = user.id
-    cookies.signed[:auth_token] = SecureRandom.hex(12)
-    Session.create(user: user, auth_token: cookies.signed[:auth_token])
- 
-    render json: {}, status: 201
+    @user = User.active.find_by(email: session_params[:email])
+    return render json: { error: 'Authentication failure' }, status: 401 unless @user && @user.authenticate(session_params[:password])
+    set_new_session
   end
 
   def login
     return render json: { message: 'User already logged in' }, status: 302 if is_logged_in?
     create
-  end
-
-  def is_logged_in?
-    cookies.signed[:auth_token] && Session.active.find_by(auth_token: cookies.signed[:auth_token])
   end
 
   def destroy
@@ -35,5 +24,17 @@ class SessionsController < ApplicationController
 
   def session_params
     params.require(:user).permit(:email, :password)
+  end
+
+  def is_logged_in?
+    cookies.signed[:auth_token] && Session.active.find_by(auth_token: cookies.signed[:auth_token])
+  end
+
+  def set_new_session
+    cookies.signed[:user_id] = @user.id
+    cookies.signed[:auth_token] = SecureRandom.hex(12)
+    session = Session.new(user: @user, auth_token: cookies.signed[:auth_token])
+    return render json: session.error, status: 500 unless session.save
+    render json: {}, status: 201
   end
 end

@@ -1,6 +1,4 @@
 class VotesController < ApplicationController
-  skip_before_action :verify_authenticity_token
-
   def create
     votable = question_or_answer
     @vote = Vote.find_by(votable: votable, user_id: cookies.signed[:user_id])
@@ -17,10 +15,12 @@ class VotesController < ApplicationController
   end
 
   def destroy
-    @vote = Vote.find(params[:id])
-    @vote.deleted_at = Time.now
+    @vote = Vote.find_by(id: params[:id], user_id: cookies.signed[:user_id])
+    return render json: { error: "Vote not found" }, status: 404 unless @vote
 
+    @vote.deleted_at = Time.now
     return render json: @vote.errors, status: 500 unless @vote.save
+
     render json: @vote, status: 201
   end
 
