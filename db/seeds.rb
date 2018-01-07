@@ -6,10 +6,6 @@ require 'bcrypt'
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
-def iterate_and_execute(list, proc)
-	list.each { |item| proc.call(item) }
-end
-
 
 # Seeding for users table
 users = [{ name: 'Viren Chugh', email: 'viren.chugh@1mg.com' },
