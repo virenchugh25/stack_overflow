@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   before_action :authorize, except: [:login, :show, :index]
 
   def authorize
-    @session = Session.active.find_by(user_id: cookies.signed[:user_id], auth_token: cookies.signed[:auth_token])
+    @session = Session.find_by(user_id: cookies.signed[:user_id], auth_token: cookies.signed[:auth_token])
     render json: { error: 'Not authorized' }, status: 403 unless @session
   end
 end

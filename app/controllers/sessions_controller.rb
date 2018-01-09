@@ -1,17 +1,12 @@
 class SessionsController < ApplicationController
   def create
-    @user = User.active.find_by(email: session_params[:email])
+    @user = User.find_by(email: session_params[:email])
     return render json: { error: 'Authentication failure' }, status: 401 unless @user && @user.authenticate(session_params[:password])
     set_new_session
   end
 
-  def login
-    return render json: { message: 'User already logged in' }, status: 302 if is_logged_in?
-    create
-  end
-
   def destroy
-    @session = Session.active.find_by(auth_token: cookies.signed[:auth_token])
+    @session = Session.find_by(auth_token: cookies.signed[:auth_token])
     if @session
       @session[:deleted_at] = Time.now
       return render json: { error: 'Could not log out successfully' }, status: 500 unless @session.save
@@ -22,12 +17,17 @@ class SessionsController < ApplicationController
     render json: {}, status: 200
   end
 
+  def login
+    return render json: { message: 'User already logged in' }, status: 302 if is_logged_in?
+    create
+  end
+
   def session_params
     params.require(:user).permit(:email, :password)
   end
 
   def is_logged_in?
-    cookies.signed[:auth_token] && Session.active.find_by(auth_token: cookies.signed[:auth_token])
+    cookies.signed[:auth_token] && Session.find_by(auth_token: cookies.signed[:auth_token])
   end
 
   def set_new_session

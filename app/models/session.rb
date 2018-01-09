@@ -3,5 +3,5 @@ class Session < ApplicationRecord
 
   belongs_to :user
 
-  scope :active, -> { where(deleted_at: nil) }
+  default_scope { where(deleted_at: nil) }
 end

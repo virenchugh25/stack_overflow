@@ -6,13 +6,13 @@ class AnswersController < ApplicationController
   end
 
   def update
-    @answer = Answer.active.find_by(id: params[:id], user_id: cookies.signed[:user_id])
+    @answer = Answer.find_by(id: params[:id], user_id: cookies.signed[:user_id])
     return render json: @answer.errors, status: 500 unless @answer.update_attributes(answer_params)
     render json: @answer, status: 200
   end
 
   def destroy
-    @answer = Answer.active.find_by(id: params[:id], user_id: cookies.signed[:user_id])
+    @answer = Answer.find_by(id: params[:id], user_id: cookies.signed[:user_id])
     return render json: { error: "Answer not found" }, status: 404 unless @answer
 
     @answer.deleted_at = Time.now

@@ -3,6 +3,7 @@ module Revisable
 
   included do
     has_many :revisions, as: :revisable
+    after_save :create_revision
   end
 
   def create_revision

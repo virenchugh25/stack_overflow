@@ -7,5 +7,5 @@ class Comment < ApplicationRecord
   belongs_to :commentable, polymorphic: true
 
   after_save :create_revision
-  scope :active, -> { where(deleted_at: nil) }
+  default_scope { where(deleted_at: nil) }
 end

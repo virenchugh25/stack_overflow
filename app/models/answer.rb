@@ -9,5 +9,5 @@ class Answer < ApplicationRecord
   belongs_to :question
 
   after_save :create_revision
-  scope :active, -> { where(deleted_at: nil) }
+  default_scope { where(deleted_at: nil) }
 end

@@ -10,6 +10,5 @@ class Question < ApplicationRecord
   has_many :answers, -> { where(deleted_at: nil) }
   has_and_belongs_to_many :tags
 
-  after_save :create_revision
-  scope :active, -> { where(deleted_at: nil) }
+  default_scope { where(deleted_at: nil) }
 end

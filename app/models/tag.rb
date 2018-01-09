@@ -3,5 +3,5 @@ class Tag < ApplicationRecord
 
   has_and_belongs_to_many :questions
 
-  scope :active, -> { where(deleted_at: nil) }
+  default_scope { where(deleted_at: nil) }
 end

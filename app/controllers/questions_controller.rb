@@ -1,11 +1,11 @@
 class QuestionsController < ApplicationController
   def index
-    @questions = Question.active
+    @questions = Question.all
     render json: @questions, status: 200
   end
 
   def show
-    @question = Question.active.includes(:comments, {:answers => :comments}).find_by(id: params[:id])
+    @question = Question.includes(:comments, {:answers => :comments}).find_by(id: params[:id])
     return render json: { error: "Question not found" }, status: 404 unless @question
     render json: @question, status: 200
   end
@@ -17,19 +17,25 @@ class QuestionsController < ApplicationController
   end
 
   def update
-    @question = Question.active.find_by(id: params[:id], user_id: cookies.signed[:user_id])
+    @question = questions.find_by(id: params[:id])
     return render json: { error: "Question not found." }, status: 404 unless @question
     return render json: @question.errors, status: 500 unless @question.update_attributes(question_params)
     render json: @question, status: 200
   end
 
   def destroy
-    @question = Question.active.find_by(id: params[:id], user_id: cookies.signed[:user_id])
+    @question = questions.find_by(id: params[:id])
     return render json: { error: "Question not found" }, status: 404 unless @question
 
     @question.deleted_at = Time.now
     return render json: @question.errors, status: 500 unless @question.save
     render json: @question, status: 201
+  end
+
+  private
+  
+  def questions
+    Question.where(user: cookies.signed[:user_id])
   end
 
   def question_params

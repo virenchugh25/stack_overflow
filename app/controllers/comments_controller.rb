@@ -6,14 +6,14 @@ class CommentsController < ApplicationController
   end
 
   def update
-    @comment = Comment.active.find_by(id: params[:id], user_id: cookies.signed[:user_id])
+    @comment = Comment.find_by(id: params[:id], user_id: cookies.signed[:user_id])
     return render json: { error: "Comment not found." }, status: 404 unless @comment
     return render json: @comment.errors, status: 500 unless @comment.update_attributes(text: comment_params[:text])
     render json: @comment, status: 200
   end
 
   def destroy
-    @comment = Comment.active.find_by(id: params[:id], user_id: cookies.signed[:user_id])
+    @comment = Comment.find_by(id: params[:id], user_id: cookies.signed[:user_id])
     return render json: { error: "Comment not found" }, status: 404 unless @comment
     
     @comment[:deleted_at] = Time.now
@@ -24,8 +24,8 @@ class CommentsController < ApplicationController
 
   def question_or_answer
     create_params = comment_params
-    Answer.active.find_by(id: create_params[:answer_id]) if create_params[:answer_id]
-    Question.active.find_by(id: create_params[:question_id]) if create_params[:question_id]
+    Answer.find_by(id: create_params[:answer_id]) if create_params[:answer_id]
+    Question.find_by(id: create_params[:question_id]) if create_params[:question_id]
   end
 
   def comment_params

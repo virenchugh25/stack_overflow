@@ -11,7 +11,10 @@ gem 'rails', '~> 5.1.4'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 0.18'
 gem 'bcrypt', '~> 3.1.7'
-gem 'rspec'
+gem 'rspec-rails'
+gem 'factory_bot_rails'
+gem 'faker'
+gem 'database_cleaner'
 # Use Puma as the app server
 gem 'puma', '~> 3.7'
 # Use SCSS for stylesheets
