@@ -15,20 +15,20 @@ describe Question do
     end
   end
 
-  context 'default scope for active questions' do
-    it 'returns recently created active question' do
-      expect{ result = Question.find(question.id) }.not_to raise_error
+  # context 'default scope for active questions' do
+  #   it 'returns recently created active question' do
+  #     expect{ result = Question.find(question.id) }.not_to raise_error
 
-      # expect(result).to eq question
-    end
+  #     # expect(result).to eq question
+  #   end
 
-    # it 'does not return recently created inactive question' do
-    #   result = Question.find_by(id: question.id)
-    #   expect{Question.find(question.id)}.to raise_error
+  #   # it 'does not return recently created inactive question' do
+  #   #   result = Question.find_by(id: question.id)
+  #   #   expect{Question.find(question.id)}.to raise_error
 
-    #   expect(result).to_not eq question
-    # end
-  end
+  #   #   expect(result).to_not eq question
+  #   # end
+  # end
 
   context 'Create question revision' do
     it 'creates revision on question create' do

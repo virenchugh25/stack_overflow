@@ -13,5 +13,15 @@ class User < ApplicationRecord
   
   before_save { email.downcase! }
 
-  default_scope { where(deleted_at: nil) }
+  ignore_soft_deleted
+
+  def destroy
+    sessions.each(&:destroy)
+    super
+  end
+
+  def destroy!
+    sessions.each(&:destroy!)
+    super
+  end
 end

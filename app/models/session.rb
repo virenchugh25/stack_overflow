@@ -3,5 +3,5 @@ class Session < ApplicationRecord
 
   belongs_to :user
 
-  default_scope { where(deleted_at: nil) }
+  ignore_soft_deleted
 end
