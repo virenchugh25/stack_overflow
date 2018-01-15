@@ -15,12 +15,12 @@ Rails.application.routes.draw do
         resources :questions, shallow: true, concerns: [:commentable, :votable] do 
           resources :answers, shallow: true, concerns: [:commentable, :votable]
         end
-        
+
       end
       
       resources :tags
       resources :questions, only: :index
-      post '/login', to: 'sessions#login'
+      post '/login', to: 'sessions#create'
       delete '/logout', to: 'sessions#destroy'
     end
   end
