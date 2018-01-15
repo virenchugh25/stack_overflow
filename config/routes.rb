@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   
   namespace :api do
     namespace :v1 do
-      concern :commentable do 
+      concern :commentable do
         resources :comments, shallow: true
       end
 
@@ -11,7 +11,7 @@ Rails.application.routes.draw do
         resources :votes, shallow: true
       end
 
-      resources :users do 
+      resources :users do
         resources :questions, shallow: true, concerns: [:commentable, :votable] do 
           resources :answers, shallow: true, concerns: [:commentable, :votable]
         end

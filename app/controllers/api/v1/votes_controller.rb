@@ -1,40 +1,36 @@
-class Api::V1::VotesController < ApplicationController
+require_relative '../crud_controller'
+
+class Api::V1::VotesController < CRUDController
   def create
-    votable = question_or_answer
-    @vote = Vote.find_by(votable: votable, user_id: cookies.signed[:user_id])
+    @vote = create_model.first
 
     if @vote
-      return render json: { error: 'Vote has already been given' }, status: 200 if @vote[:vote_value] == vote_params[:vote_value]
-      @vote[:vote_value] = vote_params[:vote_value]
+      return render json: { error: 'Vote has already been given' }, status: 200 if @vote[:vote_value] == filtered_params[:vote_value]
+      @vote[:vote_value] = filtered_params[:vote_value]
     else
-      @vote = Vote.new(votable: votable, user_id: cookies.signed[:user_id], vote_value: vote_params[:vote_value])
+      create_model.new(filtered_params)
     end
 
-    return render json: @vote.errors, status: 400 unless @vote.save
+    @vote.save
     render json: @vote, status: 201
   end
-
-  def destroy
-    @vote = Vote.find_by(id: params[:id], user_id: cookies.signed[:user_id])
-    return render json: { error: "Vote not found" }, status: 404 unless @vote
-
-    @vote.deleted_at = Time.now
-    return render json: @vote.errors, status: 400 unless @vote.save
-
-    render json: @vote, status: 200
+  
+  def read_model
+    return Question.find(params[:question_id]).votes if params[:question_id]
+    return Answer.find(params[:answer_id]).votes if params[:answer_id]
+    return Vote.all
   end
 
-  def question_or_answer
-    create_params = vote_params
-    Answer.find_by(id: create_params[:answer_id]) if create_params[:answer_id]
-    Question.find_by(id: create_params[:question_id]) if create_params[:question_id]
+  def update_model
+    current_user.votes.find(params[:id])
   end
 
-  def vote_params
-    return_params = params.require(:vote).permit(:vote_value, :question_id, :answer_id)
-    return render json: { error: "Invalid parameters" }, status: 400 if (params[:question_id] && params[:answer_id]) || (!params[:question_id] && !params[:answer_id])
-    return_params[:question_id] = params[:question_id]
-    return_params[:answer_id] = params[:answer_id]
-    return_params
+  def create_model
+    return current_user.votes.where(votable_id: params[:question_id], votable_type: 'Question') if params[:question_id]
+    return current_user.votes.where(votable_id: params[:answer_id], votable_type: 'Answer') if params[:answer_id]
+  end
+
+  def filtered_params
+    params.require(:vote).permit(:vote_value)
   end  
 end
