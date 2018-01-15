@@ -1,15 +1,16 @@
 class Api::V1::SessionsController < ApplicationController
+  before_action :session_destroy, only: :destroy
+  before_action :authenticate, only: :create
+
+  
   def create
     @user = User.find_by(email: session_params[:email])
-    return render json: { error: 'Authentication failure' }, status: 401 unless @user && @user.authenticate(session_params[:password])
+    return render json: { error: 'Authentication failure' }, status: 401 unless authenticate
     set_new_session
+    render json: {}, status: 201
   end
 
   def destroy
-    session.destroy!
-
-    cookies.delete(:user_id)
-    cookies.delete(:auth_token)
     render json: {}, status: :ok
   end
 
@@ -24,16 +25,5 @@ class Api::V1::SessionsController < ApplicationController
 
   def session
     Session.find_by(auth_token: cookies.signed[:auth_token])
-  end
-
-  def is_logged_in?
-    cookies.signed[:auth_token] && session
-  end
-
-  def set_new_session
-    cookies.signed[:user_id] = @user.id
-    cookies.signed[:auth_token] = SecureRandom.hex(12)
-    session = Session.create!(user: @user, auth_token: cookies.signed[:auth_token])
-    render json: {}, status: 201
   end
 end

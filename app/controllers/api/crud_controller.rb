@@ -1,21 +1,26 @@
 class CRUDController < ApplicationController
   def index
-    render json: read_model, status: :ok
+    render json: model.all, status: :ok
   end
 
   def show
-    render json: read_model.find(params[:id]), status: :ok
+    render json: find_one, status: :ok
   end
 
   def create
-    render json: create_model.create!(filtered_params), status: :created
+    render json: model.create!(filtered_params), status: :created
   end
 
   def update
-    render json: update_model.update_attributes!(filtered_params), status: :ok
+    find_one.update_attributes!(filtered_params)
+    render json: find_one, status: :ok
   end
 
   def destroy
-    render json: update_model.destroy!, status: :ok
+    render json: find_one.destroy!, status: :ok
+  end
+
+  def find_one
+    model.find(params[:id])
   end
 end
