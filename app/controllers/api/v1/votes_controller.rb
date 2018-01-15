@@ -5,14 +5,14 @@ class Api::V1::VotesController < CRUDController
     @vote = create_model.first
 
     if @vote
-      return render json: { error: 'Vote has already been given' }, status: 200 if @vote[:vote_value] == filtered_params[:vote_value]
+      return render json: { error: 'Vote has already been given' }, status: :ok if @vote[:vote_value] == filtered_params[:vote_value]
       @vote[:vote_value] = filtered_params[:vote_value]
     else
       create_model.new(filtered_params)
     end
 
     @vote.save
-    render json: @vote, status: 201
+    render json: @vote, status: :created
   end
   
   def read_model

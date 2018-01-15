@@ -10,11 +10,11 @@ class Api::V1::SessionsController < ApplicationController
 
     cookies.delete(:user_id)
     cookies.delete(:auth_token)
-    render json: {}, status: 200
+    render json: {}, status: :ok
   end
 
   def login
-    return render json: { message: 'User already logged in' }, status: 302 if is_logged_in?
+    return render json: { message: 'User already logged in' }, status: :found if is_logged_in?
     create
   end
 

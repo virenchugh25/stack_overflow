@@ -8,7 +8,7 @@ module ErrorHandler
     end
 
     def not_found
-      head :not_found
+      render json: { error: 'Not found' }, status: :not_found
     end
 
     def bad_request(error)
